@@ -4,11 +4,16 @@
 
 package edu.neu.coe.info6205.util;
 
+import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import edu.neu.coe.info6205.sort.simple.InsertionSort;
 import static edu.neu.coe.info6205.util.Utilities.formatWhole;
 
 /**
@@ -125,4 +130,128 @@ public class Benchmark_Timer<T> implements Benchmark<T> {
     private final Consumer<T> fPost;
 
     final static LazyLogger logger = new LazyLogger(Benchmark_Timer.class);
+    
+    public static void main(String[] args)
+    {
+    	String description = "Timing Insertion sort";
+    	InsertionSort<Integer> insertionSort = new InsertionSort<>();
+    	Benchmark_Timer<Integer[]> benchmark = new Benchmark_Timer<>(description, insertionSort);
+    	DecimalFormat format = new DecimalFormat("0.00000");
+    	double time;
+    	for(int n=5;n<=15625;n*=5)
+    	{
+    		time =  benchmark.runFromSupplier(new generateArrayWithRandomNum(n), 10);
+    		logger.info("Value of N:"+n+" Time to sort random array :" + format.format(time) +" ms");
+    	}
+    	
+    	for(int n=5;n<=15625;n*=5)
+    	{
+    		time =  benchmark.runFromSupplier(new generatePartiallySortedArray(n), 10);
+    		logger.info("Value of N:"+n+" Time to sort Partially Sorted Array:" + format.format(time) +" ms");
+    	}
+    	
+    	for(int n=5;n<=15625;n*=5)
+    	{
+    		time =  benchmark.runFromSupplier(new generateOrderedArray(n), 10);
+    		logger.info("Value of N:"+n+" Time to sort Ordered Array :" + format.format(time) +" ms");
+    	}
+    	
+    	for(int n=5;n<=15625;n*=5)
+    	{
+    		time =  benchmark.runFromSupplier(new generateReverseOrderArray(n), 10);
+    		logger.info("Value of N:"+n+" Time to sort Reverse Order Array :" + format.format(time) +" ms");
+    	}
+    	
+    }
+    
+    
+    public static class generateArrayWithRandomNum implements Supplier<Integer[]> {
+
+		private int n;
+
+		public generateArrayWithRandomNum(int n) {
+			this.n = n;
+		}
+
+		@Override
+		public Integer[] get() {
+			Random randNum = new Random();
+			Integer[] arr = new Integer[n];
+			for (int i = 0; i < n; i++) {
+				arr[i] = randNum.nextInt(1000);
+			}
+			return arr;
+		}
+    }
+    
+    public static class generatePartiallySortedArray implements Supplier<Integer[]>
+    {
+    	private int n;
+    	
+    	public generatePartiallySortedArray(int n)
+    	{
+    		this.n = n;
+    	}
+
+		@Override
+		public Integer[] get() {
+			Random randNum = new Random();
+			Integer[] arr = new Integer[n];
+			for(int i =0;i<n;i++)
+			{
+				arr[i] = randNum.nextInt(1000);
+			}
+			Arrays.sort(arr,0,n/2);
+			return arr;
+		}
+    	
+    }
+    
+    public static class generateOrderedArray implements Supplier<Integer[]>
+    {
+    	private int n;
+    	
+    	public generateOrderedArray(int n)
+    	{
+    		this.n = n;
+    	}
+
+		@Override
+		public Integer[] get() {
+			// TODO Auto-generated method stub
+			Random randNum = new Random();
+			Integer[] arr = new Integer[n];
+			for(int i =0;i<n;i++)
+			{
+				arr[i] = randNum.nextInt(1000);
+			}
+			Arrays.sort(arr);
+			return arr;
+		}
+    	
+    }
+    
+    public static class generateReverseOrderArray implements Supplier<Integer[]>
+    {
+    	private int n;
+    	
+    	public generateReverseOrderArray(int n)
+    	{
+    		this.n = n;
+    	}
+
+		@Override
+		public Integer[] get() {
+			Random randNum = new Random();
+			Integer[] arr = new Integer[n];
+			for(int i =0;i<n;i++)
+			{
+				arr[i] = randNum.nextInt(1000);
+			}
+			Arrays.sort(arr, Collections.reverseOrder());
+			return arr;
+		}
+    	
+    }
+    
 }

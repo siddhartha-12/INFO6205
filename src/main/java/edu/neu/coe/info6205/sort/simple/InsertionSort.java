@@ -3,12 +3,16 @@
  */
 package edu.neu.coe.info6205.sort.simple;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 import edu.neu.coe.info6205.sort.BaseHelper;
 import edu.neu.coe.info6205.sort.Helper;
 import edu.neu.coe.info6205.sort.SortWithHelper;
 import edu.neu.coe.info6205.util.Config;
 
-public class InsertionSort<X extends Comparable<X>> extends SortWithHelper<X> {
+public class InsertionSort<X extends Comparable<X>> extends SortWithHelper<X> implements Consumer<X[]>{
 
     /**
      * Constructor for any sub-classes to use.
@@ -53,6 +57,16 @@ public class InsertionSort<X extends Comparable<X>> extends SortWithHelper<X> {
      */
     public void sort(X[] xs, int from, int to) {
         final Helper<X> helper = getHelper();
+        for (int i = from; i < to; ++i) {
+
+			int j = i;
+
+			while (j > 0 && (helper.compare(xs[j - 1], xs[j]) == 1)) {
+
+				helper.swap(xs, j-1, j);
+				j--;
+			}
+		}
 
         // TO BE IMPLEMENTED
     }
@@ -68,5 +82,12 @@ public class InsertionSort<X extends Comparable<X>> extends SortWithHelper<X> {
     }
 
     public static final String DESCRIPTION = "Insertion sort";
+
+
+	@Override
+	public void accept(X[] t) {
+		// TODO Auto-generated method stub
+		sort(t,0,t.length);
+	}
 
 }
