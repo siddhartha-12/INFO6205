@@ -58,7 +58,21 @@ public class WheelOfFortune<T> {
      */
     public T get() {
         // TO BE IMPLEMENTED
-        throw new RuntimeException("logic error: " + r);
+        
+    	int range = this.getTotal();
+    	int rNumber = this.random.nextInt(range);
+    	Event<T> ans= null;
+    	for(Event<T> event : events)
+    	{
+    		if(rNumber<event.frequency)
+    		{
+    			return event.event;
+    		}
+    		rNumber = rNumber - event.frequency;
+    	}
+    	
+    	throw new RuntimeException("logic error: ");
+    	
     }
 
     // Private stuff...
