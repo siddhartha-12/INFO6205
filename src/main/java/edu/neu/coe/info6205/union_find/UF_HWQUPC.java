@@ -8,6 +8,8 @@
 package edu.neu.coe.info6205.union_find;
 
 import java.util.Arrays;
+import java.util.Random;
+import java.util.logging.Logger;
 
 /**
  * Height-weighted Quick Union with Path Compression
@@ -81,6 +83,17 @@ public class UF_HWQUPC implements UF {
     public int find(int p) {
         validate(p);
         int root = p;
+        while(root != parent[root])
+        {
+        	if(pathCompression)
+        	{
+        		doPathCompression(root);
+        	}
+        	root = parent[root];
+        }
+        
+        
+        
         // TO BE IMPLEMENTED
         return root;
     }
@@ -166,9 +179,22 @@ public class UF_HWQUPC implements UF {
     private final int[] height;   // height[i] = height of subtree rooted at i
     private int count;  // number of components
     private boolean pathCompression;
+    private final static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     private void mergeComponents(int i, int j) {
         // TO BE IMPLEMENTED make shorter root point to taller one
+
+
+    	if(height[i] < height[j]) {
+    		updateParent(i, j);
+    		updateHeight(j, i);
+    		return;
+    	}
+    	if(height[i]>=height[j]) {
+    		updateParent(j, i);
+    		updateHeight(i, j);
+    		return;
+    	}
     }
 
     /**
@@ -176,5 +202,42 @@ public class UF_HWQUPC implements UF {
      */
     private void doPathCompression(int i) {
         // TO BE IMPLEMENTED update parent to value of grandparent
+    	parent[i] = parent[parent[i]];
+    	
+    }
+    
+    public static int count(int n)
+    {
+    	int connections = 0;
+    	UF_HWQUPC client =  new UF_HWQUPC(n);
+    	Random random = new Random();
+    	
+    	while(client.components()>1)
+    	{
+    		int a = random.nextInt(n);
+    		int b = random.nextInt(n);
+    		connections++;
+    		if(!client.connected(a, b))
+    		{
+    			client.connect(a, b);
+    			logger.info("Connecting "+a+" - "+b);
+    			connections++;
+    		}
+    			
+    	}
+    	
+    	
+    	return connections; 
+    }
+    
+    public static void main(String args[])
+    {
+    	Integer[][] results = new Integer[6][2];
+    	for(int i = 100;i<=6400;i*=2)
+    	{
+    		logger.info("*****************Value testing for N : "+i);
+    		logger.info("Result ----- N : "+i+" | connections : "+count(i));
+    	}
+    	
     }
 }
