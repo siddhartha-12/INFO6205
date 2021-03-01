@@ -3,13 +3,17 @@
  */
 package edu.neu.coe.info6205.union_find;
 
+import java.util.Random;
+import java.util.function.Consumer;
+
 /**
  * Weighted Quick Union with Path Compression
  */
-public class WQUPC {
+public class WQUPC implements Consumer<Integer>{
     private final int[] parent;   // parent[i] = parent of i
     private final int[] size;   // size[i] = size of subtree rooted at i
     private int count;  // number of components
+    private final int[] height;
 
     /**
      * Initializes an empty union–find data structure with {@code n} sites
@@ -23,15 +27,18 @@ public class WQUPC {
         count = n;
         parent = new int[n];
         size = new int[n];
+        height =  new int[n];
         for (int i = 0; i < n; i++) {
             parent[i] = i;
             size[i] = 1;
+            //height[i] = 0;
         }
     }
 
     public void show() {
         for (int i = 0; i < parent.length; i++) {
-            System.out.printf("%d: %d, %d\n", i, parent[i], size[i]);
+            //System.out.printf("%d: %d, %d\n", i, parent[i], size[i]);
+            System.out.printf("%d: %d, %d\n", i, parent[i], height[i]);
         }
     }
 
@@ -55,13 +62,14 @@ public class WQUPC {
         validate(p);
         int root = p;
         while (root != parent[root]) {
-            root = parent[root];
+            parent[root] = parent[parent[root]]; //For one pass 
+        	root = parent[root];
         }
-        while (p != root) {
-            int newp = parent[p];
-            parent[p] = root;
-            p = newp;
-        }
+//        while (p != root) {
+//            int newp = parent[p];
+//            parent[p] = root;
+//            p = newp;
+//        }
         return root;
     }
 
@@ -101,6 +109,20 @@ public class WQUPC {
         int rootQ = find(q);
         if (rootP == rootQ) return;
         // make smaller root point to larger one
+        
+/**
+ * Section for height instead size
+ */
+//        if      (height[rootP] < height[rootQ]) parent[rootP] = rootQ;
+//        else if (height[rootP] > height[rootQ]) parent[rootQ] = rootP;
+//        else {
+//            parent[rootQ] = rootP;
+//            height[rootP]++;
+//        }
+/**
+ * Section for size
+ */
+               
         if (size[rootP] < size[rootQ]) {
             parent[rootP] = rootQ;
             size[rootQ] += size[rootP];
@@ -110,5 +132,32 @@ public class WQUPC {
         }
         count--;
     }
+    
+    
+    public static int count_connections(int n)
+    {
+    	WQUPC uf = new WQUPC(n);
+    	Random rn = new Random();
+    	int connections = 0;
+    	
+    	while(uf.count()>1)
+    	{
+    		int n1 =rn.nextInt(n);
+    		int n2 = rn.nextInt(n);
+    		connections++;
+    		if(!uf.connected(n1, n2))
+    		{
+    			uf.union(n1, n2);
+    			connections++;
+    		}
+    	}
+		return connections;
+    }
+
+	@Override
+	public void accept(Integer arg0) {
+		// TODO Auto-generated method stub
+		count_connections(arg0);
+	}
 
 }

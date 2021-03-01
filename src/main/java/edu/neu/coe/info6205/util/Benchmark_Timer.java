@@ -14,6 +14,8 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import edu.neu.coe.info6205.sort.simple.InsertionSort;
+import edu.neu.coe.info6205.union_find.WQUPC;
+
 import static edu.neu.coe.info6205.util.Utilities.formatWhole;
 
 /**
@@ -133,34 +135,45 @@ public class Benchmark_Timer<T> implements Benchmark<T> {
     
     public static void main(String[] args)
     {
-    	String description = "Timing Insertion sort";
-    	InsertionSort<Integer> insertionSort = new InsertionSort<>();
-    	Benchmark_Timer<Integer[]> benchmark = new Benchmark_Timer<>(description, insertionSort);
+    	String description = "Union Find";
+//    	InsertionSort<Integer> insertionSort = new InsertionSort<>();  //Uncomment for insertion sort
+//   	Benchmark_Timer<Integer[]> benchmark = new Benchmark_Timer<>(description, insertionSort);
+    	WQUPC uf =  new WQUPC(1);
+    	Benchmark_Timer<Integer> timer = new Benchmark_Timer<Integer>(description, uf);
     	DecimalFormat format = new DecimalFormat("0.00000");
     	double time;
-    	for(int n=5;n<=15625;n*=5)
+    	
+    	for(int n=1000;n<=10000000;n*=10) //15625
     	{
-    		time =  benchmark.runFromSupplier(new generateArrayWithRandomNum(n), 10);
-    		logger.info("Value of N:"+n+" Time to sort random array :" + format.format(time) +" ms");
+    		
+    		time = timer.run(n, 5);
+    		logger.info("Number of sites: "+n+" Time to Execute: 5 runs :" + format.format(time) +" ms");
     	}
     	
-    	for(int n=5;n<=15625;n*=5)
-    	{
-    		time =  benchmark.runFromSupplier(new generatePartiallySortedArray(n), 10);
-    		logger.info("Value of N:"+n+" Time to sort Partially Sorted Array:" + format.format(time) +" ms");
-    	}
     	
-    	for(int n=5;n<=15625;n*=5)
-    	{
-    		time =  benchmark.runFromSupplier(new generateOrderedArray(n), 10);
-    		logger.info("Value of N:"+n+" Time to sort Ordered Array :" + format.format(time) +" ms");
-    	}
-    	
-    	for(int n=5;n<=15625;n*=5)
-    	{
-    		time =  benchmark.runFromSupplier(new generateReverseOrderArray(n), 10);
-    		logger.info("Value of N:"+n+" Time to sort Reverse Order Array :" + format.format(time) +" ms");
-    	}
+//    	for(int n=5;n<=15625;n*=5)
+//    	{
+//    		time =  benchmark.runFromSupplier(new generateArrayWithRandomNum(n), 10);
+//    		logger.info("Value of N:"+n+" Time to sort random array :" + format.format(time) +" ms");
+//    	}
+//    	
+//    	for(int n=5;n<=15625;n*=5)
+//    	{
+//    		time =  benchmark.runFromSupplier(new generatePartiallySortedArray(n), 10);
+//    		logger.info("Value of N:"+n+" Time to sort Partially Sorted Array:" + format.format(time) +" ms");
+//    	}
+//    	
+//    	for(int n=5;n<=15625;n*=5)
+//    	{
+//    		time =  benchmark.runFromSupplier(new generateOrderedArray(n), 10);
+//    		logger.info("Value of N:"+n+" Time to sort Ordered Array :" + format.format(time) +" ms");
+//    	}
+//    	
+//    	for(int n=5;n<=15625;n*=5)
+//    	{
+//    		time =  benchmark.runFromSupplier(new generateReverseOrderArray(n), 10);
+//    		logger.info("Value of N:"+n+" Time to sort Reverse Order Array :" + format.format(time) +" ms");
+//    	}
     	
     }
     
